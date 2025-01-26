@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Moments</title>
+    <link rel="stylesheet" href="api.css" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #e0f7fa, #ffccbc);
+        font-family: 'Arial', sans-serif;
+        padding: 1rem;
+      }
+      h1 {
+        margin: 1rem 0;
+        padding: 0.5rem 2rem;
+        border: 2px solid #0288d1;
+        color: #0277bd;
+        background-color: #e1f5fe;
+        box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.2);
+        border-radius: 20px;
+        text-align: center;
+      }
+      div {
+        margin: 1rem;
+        width: min(90%, 350px);
+        padding: 1.5rem;
+        border-radius: 15px;
+        border: 2px solid #0288d1;
+        background-color: #ffffff;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-top: 1rem;
+      }
+      p {
+        margin: 1rem 0;
+        font-size: 1.1rem;
+        color: #555;
+      }
+      button {
+        padding: 0.7rem 1.5rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #ffffff;
+        background-color: #0288d1;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+      button:hover {
+        background-color: #0277bd;
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CAT Moments</h1>
+
+    <div>
+      <button id="button">Change</button>
+      <p id="fact">Click the button to get a cat fact!</p>
+      <img id="dogimg" src="https://via.placeholder.com/300" alt="Cat Image" />
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <script>
+      let p = document.querySelector("#fact");
+      let img = document.querySelector("#dogimg");
+      let button = document.querySelector("#button");
+      let imgUrl2 = "https://api.thecatapi.com/v1/images/search/";
+      let url = "https://catfact.ninja/fact";
+
+      button.addEventListener("click", async () => {
+        let fact = await getdata();
+        p.innerText = fact;
+        let image;
+        if (fact === "No Facts") {
+          image = "https://via.placeholder.com/300?text=No+Image";
+        } else {
+          image = await cataxios();
+        }
+        img.setAttribute("src", image);
+      });
+
+      async function getdata() {
+        try {
+          let opFact = await axios.get(url);
+          let factLength = opFact.data.fact.length;
+
+          if (factLength < 120) {
+            return opFact.data.fact;
+          } else {
+            return "Fact too long, try again!";
+          }
+        } catch (err) {
+          return "No Facts";
+        }
+      }
+
+      async function cataxios() {
+        try {
+          let op = await axios.get(imgUrl2);
+          return op.data[0].url;
+        } catch (err) {
+          console.log(err);
+          return "https://via.placeholder.com/300?text=Error+Loading+Image";
+        }
+      }
+    </script>
+  </body>
+</html>
